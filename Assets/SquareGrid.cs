@@ -10,6 +10,11 @@ public class SquareGrid<T> : Grid<T> {
         this.cellSize = cellSize;
     }
 
+    public override void GetXY(Vector3 position, out int x, out int y) {
+        x = Mathf.FloorToInt((position - base.GetOriginPosition()).x / cellSize);
+        y = Mathf.FloorToInt((position - base.GetOriginPosition()).y / cellSize);
+    }
+
     public override Vector3 GetPosition(int x, int y) {
         return new Vector3(x, y) * cellSize + base.GetOriginPosition();
     }
@@ -36,9 +41,7 @@ public class SquareGrid<T> : Grid<T> {
     }
 
     public override T GetObject(Vector3 position) {
-        int x = Mathf.FloorToInt((position - base.GetOriginPosition()).x / cellSize);
-        int y = Mathf.FloorToInt((position - base.GetOriginPosition()).y / cellSize);
-
+        GetXY(position, out int x, out int y);
         return GetObject(x, y);
     }
 
@@ -50,9 +53,7 @@ public class SquareGrid<T> : Grid<T> {
     }
 
     public override void SetObject(Vector3 position, T value) {
-        int x = Mathf.FloorToInt((position - base.GetOriginPosition()).x / cellSize);
-        int y = Mathf.FloorToInt((position - base.GetOriginPosition()).y / cellSize);
-
+        GetXY(position, out int x, out int y);
         SetObject(x, y, value);
     }
 }

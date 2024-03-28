@@ -47,6 +47,8 @@ public abstract class Grid<T> {
         CellUpdate?.Invoke(this, e);
     }
 
+    public abstract void GetXY(Vector3 position, out int x, out int y);
+
     public abstract Vector3 GetPosition(int x, int y);
 
     public abstract Vector3 GetCentrePosition(int x, int y);
