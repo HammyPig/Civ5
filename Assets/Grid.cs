@@ -44,5 +44,5 @@ public abstract class Grid<T> {
 
     public abstract T GetObject(int x, int y);
 
-    public abstract T GetObject(Vector3 Position);
+    public abstract T GetObject(Vector3 position);
 }

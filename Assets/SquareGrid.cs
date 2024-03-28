@@ -35,9 +35,9 @@ public class SquareGrid<T> : Grid<T> {
         return base.gridArray[x, y];
     }
 
-    public override T GetObject(Vector3 Position) {
-        int x = Mathf.FloorToInt((Position - base.GetOriginPosition()).x / cellSize);
-        int y = Mathf.FloorToInt((Position - base.GetOriginPosition()).y / cellSize);
+    public override T GetObject(Vector3 position) {
+        int x = Mathf.FloorToInt((position - base.GetOriginPosition()).x / cellSize);
+        int y = Mathf.FloorToInt((position - base.GetOriginPosition()).y / cellSize);
 
         return GetObject(x, y);
     }
