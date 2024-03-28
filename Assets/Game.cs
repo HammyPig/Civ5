@@ -8,7 +8,7 @@ public class Game : MonoBehaviour {
     private GridDebugVisual<int> gridDebugVisual;
 
     void Start() {
-        grid = new SquareGrid<int>(5, 3, Vector3.zero, 5f);
+        grid = new HexGrid<int>(5, 3, Vector3.zero, 5f);
         gridDebugVisual = new GridDebugVisual<int>(grid);
     }
 
