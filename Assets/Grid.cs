@@ -2,19 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grid<T> {
+public abstract class Grid<T> {
 
     private int width;
     private int height;
-    private float cellSize;
     private Vector3 originPosition;
-
-    private T[,] gridArray;
     
-    public Grid(int width, int height, float cellSize, Vector3 originPosition) {
+    protected T[,] gridArray;
+    
+    public Grid(int width, int height, Vector3 originPosition) {
         this.width = width;
         this.height = height;
-        this.cellSize = cellSize;
         this.originPosition = originPosition;
 
         gridArray = new T[width, height];
@@ -34,28 +32,17 @@ public class Grid<T> {
         return height;
     }
 
-    public float GetCellSize() {
-        return cellSize;
+    public Vector3 GetOriginPosition() {
+        return originPosition;
     }
 
-    public Vector3 GetWorldPosition(int x, int y) {
-        return new Vector3(x, y) * cellSize + originPosition;
-    }
+    public abstract Vector3 GetPosition(int x, int y);
 
-    public void GetXY(Vector3 worldPosition, out int x, out int y) {
-        x = Mathf.FloorToInt((worldPosition - originPosition).x / cellSize);
-        y = Mathf.FloorToInt((worldPosition - originPosition).y / cellSize);
-    }
+    public abstract Vector3 GetCentrePosition(int x, int y);
 
-    public T GetObject(int x, int y) {
-        if (x < 0 || x >= width || y < 0 || y >= height) return default(T);
+    public abstract Vector3[] GetVertexPositions(int x, int y);
 
-        return gridArray[x, y];
-    }
+    public abstract T GetObject(int x, int y);
 
-    public T GetObject(Vector3 worldPosition) {
-        GetXY(worldPosition, out int x, out int y);
-
-        return GetObject(x, y);
-    }
+    public abstract T GetObject(Vector3 Position);
 }

@@ -16,7 +16,7 @@ public class GridDebugVisual<T> {
                 GameObject gameObject = new("World_Text", typeof(TextMesh));
 
                 Transform transform = gameObject.transform;
-                transform.localPosition = grid.GetWorldPosition(x, y) + new Vector3(grid.GetCellSize(), grid.GetCellSize()) * 0.5f;
+                transform.localPosition = grid.GetCentrePosition(x, y);
 
                 TextMesh textMesh = gameObject.GetComponent<TextMesh>();
                 textMesh.anchor = TextAnchor.MiddleCenter;
@@ -24,11 +24,15 @@ public class GridDebugVisual<T> {
 
                 debugTextArray[x, y] = textMesh;
 
-                Debug.DrawLine(grid.GetWorldPosition(x, y), grid.GetWorldPosition(x, y + 1), Color.white, 100f);
-                Debug.DrawLine(grid.GetWorldPosition(x, y + 1), grid.GetWorldPosition(x + 1, y + 1), Color.white, 100f);
-                Debug.DrawLine(grid.GetWorldPosition(x + 1, y + 1), grid.GetWorldPosition(x + 1, y), Color.white, 100f);
-                Debug.DrawLine(grid.GetWorldPosition(x + 1, y), grid.GetWorldPosition(x, y), Color.white, 100f);
+                Vector3[] vertexPositions = grid.GetVertexPositions(x, y);
+                DrawShape(vertexPositions);
             }
+        }
+    }
+
+    private void DrawShape(Vector3[] vertexPositions) {
+        for (int i = 0; i < vertexPositions.Length; i++) {
+            Debug.DrawLine(vertexPositions[i], vertexPositions[(i + 1) % vertexPositions.Length], Color.white, 100f);
         }
     }
 }
