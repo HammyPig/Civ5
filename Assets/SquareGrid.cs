@@ -41,4 +41,18 @@ public class SquareGrid<T> : Grid<T> {
 
         return GetObject(x, y);
     }
+
+    public override void SetObject(int x, int y, T value) {
+        if (x < 0 || x >= base.GetWidth() || y < 0 || y >= base.GetHeight()) return;
+
+        base.gridArray[x, y] = value;
+        base.OnCellUpdate(new Grid<T>.CellUpdateEventArgs { x = x, y = y });
+    }
+
+    public override void SetObject(Vector3 position, T value) {
+        int x = Mathf.FloorToInt((position - base.GetOriginPosition()).x / cellSize);
+        int y = Mathf.FloorToInt((position - base.GetOriginPosition()).y / cellSize);
+
+        SetObject(x, y, value);
+    }
 }

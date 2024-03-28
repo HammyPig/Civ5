@@ -1,8 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Grid<T> {
+
+    public event EventHandler<CellUpdateEventArgs> CellUpdate;
+    public class CellUpdateEventArgs : EventArgs {
+        public int x;
+        public int y;
+    }
 
     private int width;
     private int height;
@@ -36,6 +43,10 @@ public abstract class Grid<T> {
         return originPosition;
     }
 
+    protected virtual void OnCellUpdate(CellUpdateEventArgs e) {
+        CellUpdate?.Invoke(this, e);
+    }
+
     public abstract Vector3 GetPosition(int x, int y);
 
     public abstract Vector3 GetCentrePosition(int x, int y);
@@ -45,4 +56,8 @@ public abstract class Grid<T> {
     public abstract T GetObject(int x, int y);
 
     public abstract T GetObject(Vector3 position);
+
+    public abstract void SetObject(int x, int y, T value);
+
+    public abstract void SetObject(Vector3 position, T value);
 }

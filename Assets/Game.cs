@@ -11,4 +11,16 @@ public class Game : MonoBehaviour {
         grid = new SquareGrid<int>(5, 3, Vector3.zero, 5f);
         gridDebugVisual = new GridDebugVisual<int>(grid);
     }
+
+    void Update() {
+        if (Input.GetMouseButtonDown(0)) {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            grid.SetObject(mousePosition, grid.GetObject(mousePosition) + 1);
+        }
+
+        if (Input.GetMouseButtonDown(1)) {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Debug.Log(grid.GetObject(mousePosition));
+        }
+    }
 }

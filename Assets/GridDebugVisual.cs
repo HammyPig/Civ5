@@ -10,6 +10,8 @@ public class GridDebugVisual<T> {
     public GridDebugVisual(Grid<T> grid) {
         this.grid = grid;
 
+        grid.CellUpdate += (object sender, Grid<T>.CellUpdateEventArgs eventArgs) => UpdateDebugTextCell(eventArgs.x, eventArgs.y);
+
         debugTextArray = new TextMesh[grid.GetWidth(), grid.GetHeight()];
         for (int x = 0; x < grid.GetWidth(); x++) {
             for (int y = 0; y < grid.GetHeight(); y++) {
@@ -34,5 +36,9 @@ public class GridDebugVisual<T> {
         for (int i = 0; i < vertexPositions.Length; i++) {
             Debug.DrawLine(vertexPositions[i], vertexPositions[(i + 1) % vertexPositions.Length], Color.white, 100f);
         }
+    }
+
+    private void UpdateDebugTextCell(int x, int y) {
+        debugTextArray[x, y].text = grid.GetObject(x, y)?.ToString();
     }
 }
