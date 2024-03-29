@@ -18,6 +18,28 @@ public class Map {
         return hexGrid.GetObject(position);
     }
 
+    public void GenerateMap() {
+        float scale = 0.3f;
+
+        for (int x = 0; x < hexGrid.GetWidth(); x++) {
+            for (int y = 0; y < hexGrid.GetHeight(); y++) {
+                Tile tile = hexGrid.GetObject(x, y);
+
+                float sampleX = x * scale;
+                float sampleY = y * scale;
+                float perlinNoise = Mathf.PerlinNoise(sampleX, sampleY);
+
+                Debug.Log(perlinNoise + " " + sampleX);
+
+                if (perlinNoise <= 0.5) tile.SetBiome(Tile.Biome.Water);
+                else if (perlinNoise <= 0.65) tile.SetBiome(Tile.Biome.Desert);
+                else if (perlinNoise <= 1) tile.SetBiome(Tile.Biome.Plains);
+
+                hexGrid.OnCellUpdate(new Grid<Tile>.CellUpdateEventArgs { x = x, y = y });
+            }
+        }
+    }
+
     public class Tile {
 
         public enum Biome {

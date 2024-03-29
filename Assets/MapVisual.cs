@@ -21,6 +21,7 @@ public class MapVisual : MonoBehaviour {
     private Dictionary<Map.Tile.Biome, UVCoords> biomeUVs;
     private Mesh mesh;
     private Map map;
+    private bool updateMesh = false;
 
     private void Awake() {
         mesh = new Mesh();
@@ -39,9 +40,22 @@ public class MapVisual : MonoBehaviour {
         }
     }
 
+    private void LateUpdate() {
+        if (updateMesh) {
+            updateMesh = false;
+            UpdateVisual();
+        }
+    }
+
+    public void MapUpdate(object sender, Grid<Map.Tile>.CellUpdateEventArgs e) {
+        updateMesh = true;
+    }
+
     public void SetMap(Map map) {
         this.map = map;
-        UpdateVisual();
+        updateMesh = true;
+
+        map.GetGrid().CellUpdate += MapUpdate;
     }
 
     private void UpdateVisual() {

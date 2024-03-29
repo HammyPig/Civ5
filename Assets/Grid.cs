@@ -42,7 +42,7 @@ public abstract class Grid<T> {
         return originPosition;
     }
 
-    protected virtual void OnCellUpdate(CellUpdateEventArgs e) {
+    public virtual void OnCellUpdate(CellUpdateEventArgs e) {
         CellUpdate?.Invoke(this, e);
     }
 

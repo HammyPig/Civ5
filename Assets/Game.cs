@@ -9,8 +9,10 @@ public class Game : MonoBehaviour {
     private Map map;
 
     void Start() {
-        map = new Map(5);
+        map = new Map(100);
         mapVisual.SetMap(map);
+
+        map.GenerateMap();
     }
 
     void Update() {
