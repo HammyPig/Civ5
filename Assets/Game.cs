@@ -4,23 +4,19 @@ using UnityEngine;
 
 public class Game : MonoBehaviour {
 
-    private Grid<int> grid;
-    private GridDebugVisual<int> gridDebugVisual;
+    [SerializeField] private MapVisual mapVisual;
+
+    private Map map;
 
     void Start() {
-        grid = new HexGrid<int>(5, 3, Vector3.zero, (Grid<int> g, int x, int y) => { return 0; }, 5);
-        gridDebugVisual = new GridDebugVisual<int>(grid);
+        map = new Map(5);
+        mapVisual.SetMap(map);
     }
 
     void Update() {
         if (Input.GetMouseButtonDown(0)) {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            grid.SetObject(mousePosition, grid.GetObject(mousePosition) + 1);
-        }
-
-        if (Input.GetMouseButtonDown(1)) {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Debug.Log(grid.GetObject(mousePosition));
+            Debug.Log(map.GetTile(mousePosition));
         }
     }
 }
