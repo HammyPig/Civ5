@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,7 @@ public class HexGrid<T> : Grid<T> {
     private float circumradius;
     private float inradius;
     
-    public HexGrid(int width, int height, Vector3 originPosition, float cellSize) : base(width, height, originPosition) {
+    public HexGrid(int width, int height, Vector3 originPosition, Func<Grid<T>, int, int, T> newGridObject, float cellSize) : base(width, height, originPosition, newGridObject) {
         circumradius = cellSize / 2f;
         inradius = Mathf.Sqrt(3) / 2 * circumradius;
     }

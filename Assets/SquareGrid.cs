@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ public class SquareGrid<T> : Grid<T> {
 
     private float cellSize;
     
-    public SquareGrid(int width, int height, Vector3 originPosition, float cellSize) : base(width, height, originPosition) {
+    public SquareGrid(int width, int height, Vector3 originPosition, Func<Grid<T>, int, int, T> newGridObject, float cellSize) : base(width, height, originPosition, newGridObject) {
         this.cellSize = cellSize;
     }
 

@@ -17,16 +17,15 @@ public abstract class Grid<T> {
     
     protected T[,] gridArray;
     
-    public Grid(int width, int height, Vector3 originPosition) {
+    public Grid(int width, int height, Vector3 originPosition, Func<Grid<T>, int, int, T> newGridObject) {
         this.width = width;
         this.height = height;
         this.originPosition = originPosition;
 
         gridArray = new T[width, height];
-
         for (int x = 0; x < gridArray.GetLength(0); x++) {
             for (int y = 0; y < gridArray.GetLength(1); y++) {
-                gridArray[x, y] = default(T);
+                gridArray[x, y] = newGridObject(this, x, y);
             }
         }
     }
