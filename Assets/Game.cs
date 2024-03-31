@@ -9,7 +9,7 @@ public class Game : MonoBehaviour {
     private Map map;
 
     void Start() {
-        map = new Map(100);
+        map = new Map(Map.MapSize.Standard);
         mapVisual.SetMap(map);
 
         map.GenerateMap();

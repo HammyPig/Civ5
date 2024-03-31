@@ -4,10 +4,37 @@ using UnityEngine;
 
 public class Map {
 
+    public enum MapSize {
+        Duel,
+        Tiny,
+        Small,
+        Standard,
+        Large,
+        Huge
+    }
+
+    // based on https://civilization.fandom.com/wiki/Map_(Civ5)
+    Dictionary<MapSize, Vector2Int> mapSizeWidthHeight = new() {
+        {MapSize.Duel, new Vector2Int(40, 24)},
+        {MapSize.Tiny, new Vector2Int(56, 36)},
+        {MapSize.Small, new Vector2Int(66, 42)},
+        {MapSize.Standard, new Vector2Int(80, 52)},
+        {MapSize.Large, new Vector2Int(104, 64)},
+        {MapSize.Huge, new Vector2Int(128, 80)}
+    };
+
+    private readonly MapSize mapSize;
     private HexGrid<Tile> hexGrid;
 
-    public Map(int size) {
-        hexGrid = new(size, size, Vector3.zero, (Grid<Tile> g, int x, int y) => new Tile(), 5f);
+    public Map(MapSize mapSize) {
+        this.mapSize = mapSize;
+        int mapSizeWidth = mapSizeWidthHeight[mapSize].x;
+        int mapSizeHeight = mapSizeWidthHeight[mapSize].y;
+        hexGrid = new(mapSizeWidth, mapSizeHeight, Vector3.zero, (Grid<Tile> g, int x, int y) => new Tile(), 5f);
+    }
+
+    public MapSize GetMapSize() {
+        return mapSize;
     }
 
     public Grid<Tile> GetGrid() {
