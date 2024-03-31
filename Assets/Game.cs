@@ -5,14 +5,14 @@ using UnityEngine;
 public class Game : MonoBehaviour {
 
     [SerializeField] private MapVisual mapVisual;
+    [SerializeField] private MapDebugger mapDebugger;
 
     private Map map;
 
     void Start() {
         map = new Map(Map.MapSize.Standard);
         mapVisual.SetMap(map);
-
-        map.GenerateMap();
+        mapDebugger.SetMap(map);
     }
 
     void Update() {
