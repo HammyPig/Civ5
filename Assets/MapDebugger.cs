@@ -5,19 +5,35 @@ using UnityEngine;
 public class MapDebugger : MonoBehaviour {
     
     public int seed;
-    public float scale = 25;
-    public int octaves = 4;
-    [Range(0, 1)] public float persistence = 0.5f;
-    public float lacunarity = 2;
-    public Map.BiomeHeight[] biomeHeights;
+    
+    public Map.NoiseMapArgs seaLevelNoiseMapArgs;
+    public Map.NoiseMapArgs elevationNoiseMapArgs;
+    public Map.NoiseMapArgs temperatureNoiseMapArgs;
+    public Map.NoiseMapArgs rainfallNoiseMapArgs;
+
+    public float seaLevelThreshold;
+    public Map.ValueThreshold<Map.Tile.Elevation>[] elevationThresholds;
+    public Map.ValueThreshold<Map.Tile.Temperature>[] temperatureThresholds;
+    public Map.ValueThreshold<Map.Tile.Rainfall>[] rainfallThresholds;
 
     private Map map;
 
     void OnValidate() {
         seed = Mathf.Max(seed, 0);
-        scale = Mathf.Max(scale, 0.0001f);
-        octaves = Mathf.Max(octaves, 0);
-        lacunarity = Mathf.Max(lacunarity, 1);
+
+        Map.NoiseMapArgs[] noiseMapArgs = {
+            seaLevelNoiseMapArgs,
+            elevationNoiseMapArgs,
+            temperatureNoiseMapArgs,
+            rainfallNoiseMapArgs
+        };
+
+        for (int i = 0; i < noiseMapArgs.Length; i++) {
+            noiseMapArgs[i].scale = Mathf.Max(noiseMapArgs[i].scale, 0.0001f);
+            noiseMapArgs[i].octaves = Mathf.Max(noiseMapArgs[i].octaves, 0);
+            noiseMapArgs[i].persistence = Mathf.Clamp(noiseMapArgs[i].persistence, 0, 1);
+            noiseMapArgs[i].lacunarity = Mathf.Max(noiseMapArgs[i].lacunarity, 1);
+        }
     }
 
     public void SetMap(Map map) {
@@ -25,6 +41,6 @@ public class MapDebugger : MonoBehaviour {
     }
 
     public void GenerateMap() {
-        map.GenerateMap(seed, scale, octaves, persistence, lacunarity, biomeHeights);
+        map.GenerateMap(seed, seaLevelNoiseMapArgs, elevationNoiseMapArgs, temperatureNoiseMapArgs, rainfallNoiseMapArgs, seaLevelThreshold, elevationThresholds, temperatureThresholds, rainfallThresholds);
     }
 }

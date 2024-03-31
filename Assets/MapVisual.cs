@@ -5,8 +5,14 @@ using UnityEngine;
 
 public class MapVisual : MonoBehaviour {
 
-    [System.Serializable] public struct BiomeSpritePixel {
-        public Map.Tile.Biome biome;
+    [System.Serializable] public struct TerrainSpritePixel {
+        public Map.Tile.Terrain terrain;
+        public Vector2Int uv00;
+        public Vector2Int uv11;
+    }
+
+    [System.Serializable] public struct VegetationSpritePixel {
+        public Map.Tile.Vegetation vegetation;
         public Vector2Int uv00;
         public Vector2Int uv11;
     }
@@ -16,9 +22,11 @@ public class MapVisual : MonoBehaviour {
         public Vector2 uv11;
     }
     
-    [SerializeField] private BiomeSpritePixel[] biomeSpritePixels;
+    [SerializeField] private TerrainSpritePixel[] terrainSpritePixels;
+    [SerializeField] private VegetationSpritePixel[] vegetationSpritePixels;
 
-    private Dictionary<Map.Tile.Biome, UVCoords> biomeUVs;
+    private Dictionary<Map.Tile.Terrain, UVCoords> terrainUVs;
+    private Dictionary<Map.Tile.Vegetation, UVCoords> vegetationUVs;
     private Mesh mesh;
     private Map map;
     private bool updateMesh = false;
@@ -31,11 +39,19 @@ public class MapVisual : MonoBehaviour {
         int textureWidth = texture.width;
         int textureHeight = texture.height;
 
-        biomeUVs = new();
-        foreach (BiomeSpritePixel biomeSpritePixel in biomeSpritePixels) {
-            biomeUVs[biomeSpritePixel.biome] = new UVCoords {
-                uv00 = new Vector2((float) biomeSpritePixel.uv00.x / textureWidth, (float) biomeSpritePixel.uv00.y / textureHeight),
-                uv11 = new Vector2((float) biomeSpritePixel.uv11.x / textureWidth, (float) biomeSpritePixel.uv11.y / textureHeight)
+        terrainUVs = new();
+        foreach (TerrainSpritePixel terrainSpritePixel in terrainSpritePixels) {
+            terrainUVs[terrainSpritePixel.terrain] = new UVCoords {
+                uv00 = new Vector2((float) terrainSpritePixel.uv00.x / textureWidth, (float) terrainSpritePixel.uv00.y / textureHeight),
+                uv11 = new Vector2((float) terrainSpritePixel.uv11.x / textureWidth, (float) terrainSpritePixel.uv11.y / textureHeight)
+            };
+        }
+
+        vegetationUVs = new();
+        foreach (VegetationSpritePixel vegetationSpritePixel in vegetationSpritePixels) {
+            vegetationUVs[vegetationSpritePixel.vegetation] = new UVCoords {
+                uv00 = new Vector2((float) vegetationSpritePixel.uv00.x / textureWidth, (float) vegetationSpritePixel.uv00.y / textureHeight),
+                uv11 = new Vector2((float) vegetationSpritePixel.uv11.x / textureWidth, (float) vegetationSpritePixel.uv11.y / textureHeight)
             };
         }
     }
@@ -83,7 +99,14 @@ public class MapVisual : MonoBehaviour {
                 };
                 cellTriangles.CopyTo(triangles, triangleIndexOffset);
                 
-                UVCoords uvCoords = biomeUVs[tile.GetBiome()];
+                UVCoords uvCoords;
+
+                if (tile.GetVegetation() != Map.Tile.Vegetation.None) {
+                    uvCoords = vegetationUVs[tile.GetVegetation()];
+                } else {
+                    uvCoords = terrainUVs[tile.GetTerrain()];
+                }
+                
                 uv[vertexIndexOffset] = uvCoords.uv00;
                 uv[vertexIndexOffset + 1] = uvCoords.uv00;
                 uv[vertexIndexOffset + 2] = uvCoords.uv00;

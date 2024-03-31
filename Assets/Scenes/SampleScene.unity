@@ -309,25 +309,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46eb62cc2c4d141f4bc3aeaf4a9083d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  biomeSpritePixels:
-  - biome: 0
-    uv00: {x: 2, y: 0}
-    uv11: {x: 2, y: 0}
-  - biome: 1
+  terrainSpritePixels:
+  - terrain: 0
     uv00: {x: 0, y: 0}
-    uv11: {x: 0, y: 0}
-  - biome: 2
-    uv00: {x: 1, y: 0}
-    uv11: {x: 1, y: 0}
-  - biome: 3
+    uv11: {x: 8, y: 0}
+  - terrain: 1
     uv00: {x: 3, y: 0}
     uv11: {x: 3, y: 0}
-  - biome: 4
+  - terrain: 2
+    uv00: {x: 1, y: 0}
+    uv11: {x: 1, y: 0}
+  - terrain: 3
+    uv00: {x: 2, y: 0}
+    uv11: {x: 2, y: 0}
+  - terrain: 4
+    uv00: {x: 6, y: 0}
+    uv11: {x: 6, y: 0}
+  - terrain: 5
     uv00: {x: 4, y: 0}
     uv11: {x: 4, y: 0}
-  - biome: 5
+  - terrain: 6
     uv00: {x: 5, y: 0}
     uv11: {x: 5, y: 0}
+  vegetationSpritePixels:
+  - vegetation: 1
+    uv00: {x: 0, y: 0}
+    uv11: {x: 0, y: 0}
+  - vegetation: 2
+    uv00: {x: 8, y: 0}
+    uv11: {x: 8, y: 0}
 --- !u!23 &1221332392
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -423,15 +433,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 0
-  scale: 25
-  octaves: 4
-  persistence: 0.5
-  lacunarity: 2
-  biomeHeights:
-  - biome: 5
-    height: 0.6
-  - biome: 1
-    height: 1
+  seaLevelNoiseMapArgs:
+    scale: 25
+    octaves: 4
+    persistence: 0.5
+    lacunarity: 2
+  elevationNoiseMapArgs:
+    scale: 25
+    octaves: 4
+    persistence: 0.5
+    lacunarity: 2
+  temperatureNoiseMapArgs:
+    scale: 20
+    octaves: 4
+    persistence: 0.5
+    lacunarity: 2
+  rainfallNoiseMapArgs:
+    scale: 5
+    octaves: 4
+    persistence: 0.5
+    lacunarity: 2
+  seaLevelThreshold: 0.6
+  elevationThresholds:
+  - value: 1
+    threshold: 1
+  - value: 2
+    threshold: 1
+  - value: 3
+    threshold: 1
+  temperatureThresholds:
+  - value: 1
+    threshold: 0.2
+  - value: 2
+    threshold: 0.6
+  - value: 3
+    threshold: 1
+  rainfallThresholds:
+  - value: 1
+    threshold: 0.33
+  - value: 2
+    threshold: 0.66
+  - value: 3
+    threshold: 1
 --- !u!4 &1693453539
 Transform:
   m_ObjectHideFlags: 0
