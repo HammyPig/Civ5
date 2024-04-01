@@ -309,35 +309,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46eb62cc2c4d141f4bc3aeaf4a9083d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainSpritePixels:
-  - terrain: 0
-    uv00: {x: 0, y: 0}
-    uv11: {x: 8, y: 0}
-  - terrain: 1
-    uv00: {x: 3, y: 0}
-    uv11: {x: 3, y: 0}
-  - terrain: 2
-    uv00: {x: 1, y: 0}
-    uv11: {x: 1, y: 0}
-  - terrain: 3
-    uv00: {x: 2, y: 0}
-    uv11: {x: 2, y: 0}
-  - terrain: 4
-    uv00: {x: 6, y: 0}
-    uv11: {x: 6, y: 0}
-  - terrain: 5
-    uv00: {x: 4, y: 0}
-    uv11: {x: 4, y: 0}
-  - terrain: 6
-    uv00: {x: 5, y: 0}
-    uv11: {x: 5, y: 0}
-  vegetationSpritePixels:
-  - vegetation: 1
-    uv00: {x: 0, y: 0}
-    uv11: {x: 0, y: 0}
-  - vegetation: 2
-    uv00: {x: 8, y: 0}
-    uv11: {x: 8, y: 0}
+  terrainSpritePositions:
+  - sprite: 0
+    position: {x: 0, y: 0}
+  - sprite: 1
+    position: {x: 3, y: 0}
+  - sprite: 2
+    position: {x: 1, y: 0}
+  - sprite: 3
+    position: {x: 2, y: 0}
+  - sprite: 4
+    position: {x: 5, y: 0}
+  - sprite: 5
+    position: {x: 4, y: 0}
+  - sprite: 6
+    position: {x: 7, y: 0}
+  - sprite: 7
+    position: {x: 2, y: 1}
+  - sprite: 8
+    position: {x: 0, y: 1}
+  - sprite: 9
+    position: {x: 1, y: 1}
+  - sprite: 10
+    position: {x: 4, y: 1}
+  - sprite: 11
+    position: {x: 3, y: 1}
+  - sprite: 12
+    position: {x: 7, y: 1}
+  - sprite: 13
+    position: {x: 5, y: 1}
+  - sprite: 14
+    position: {x: 6, y: 1}
+  - sprite: 15
+    position: {x: 1, y: 2}
+  - sprite: 16
+    position: {x: 0, y: 2}
+  vegetationSpritePositions:
+  - sprite: 1
+    position: {x: 2, y: 2}
+  - sprite: 2
+    position: {x: 3, y: 2}
 --- !u!23 &1221332392
 MeshRenderer:
   m_ObjectHideFlags: 0

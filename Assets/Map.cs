@@ -131,7 +131,6 @@ public class Map {
         for (int x = 0; x < hexGrid.GetWidth(); x++) {
             for (int y = 0; y < hexGrid.GetHeight(); y++) {
                 Tile tile = hexGrid.GetObject(x, y);
-                tile.SetElevation(Tile.Elevation.None);
                 tile.SetTerrain(Tile.Terrain.None);
                 tile.SetVegetation(Tile.Vegetation.None);
             }
@@ -146,18 +145,18 @@ public class Map {
                 }
 
                 if (tile.GetTerrain() == Tile.Terrain.Water) continue;
+                
+                Map.Tile.Elevation elevation = Tile.Elevation.None;
+                Map.Tile.Temperature temperature = Tile.Temperature.None;
+                Map.Tile.Rainfall rainfall = Tile.Rainfall.None;
 
                 for (int i = 0; i < elevationThresholds.Length; i++) {
                     if (elevationNoiseMap[x, y] <= elevationThresholds[i].threshold) {
-                        tile.SetElevation(elevationThresholds[i].value);
+                        elevation = elevationThresholds[i].value;
                         break;
                     }
                 }
 
-                if (tile.GetElevation() == Tile.Elevation.Mountain) continue;
-                
-                Map.Tile.Temperature temperature = Tile.Temperature.None;
-                Map.Tile.Rainfall rainfall = Tile.Rainfall.None;
                 for (int i = 0; i < temperatureThresholds.Length; i++) {
                     if (temperatureNoiseMap[x, y] <= temperatureThresholds[i].threshold) {
                         temperature = temperatureThresholds[i].value;
@@ -172,7 +171,7 @@ public class Map {
                     }
                 }
 
-                tile.SetTerrain(temperature, rainfall, seed);
+                tile.SetTerrain(elevation, temperature, rainfall, seed);
                 tile.SetVegetation(temperature, rainfall, seed);
             }
         }
@@ -269,7 +268,17 @@ public class Map {
             Plains,
             Snow,
             Tundra,
-            Water
+            Water,
+            DesertHill,
+            GrasslandHill,
+            PlainsHill,
+            SnowHill,
+            TundraHill,
+            DesertMountain,
+            GrasslandMountain,
+            PlainsMountain,
+            SnowMountain,
+            TundraMountain
         }
 
         public enum Vegetation {
@@ -278,16 +287,11 @@ public class Map {
             Jungle
         }
 
-        private Elevation elevation = Elevation.None;
         private Terrain terrain = Terrain.None;
         private Vegetation vegetation = Vegetation.None;
 
         public override string ToString() {
-            return terrain.ToString() + " " + elevation.ToString() + " " + vegetation.ToString();
-        }
-
-        public Elevation GetElevation() {
-            return elevation;
+            return terrain.ToString() + " " + vegetation.ToString();
         }
 
         public Terrain GetTerrain() {
@@ -298,15 +302,11 @@ public class Map {
             return vegetation;
         }
 
-        public void SetElevation(Elevation elevation) {
-            this.elevation = elevation;
-        }
-
         public void SetTerrain(Terrain terrain) {
             this.terrain = terrain;
         }
 
-        public void SetTerrain(Temperature temperature, Rainfall rainfall, int seed) {
+        public void SetTerrain(Elevation elevation, Temperature temperature, Rainfall rainfall, int seed) {
             System.Random prng = new(seed);
             Terrain terrain = Terrain.None;
             
@@ -324,6 +324,12 @@ public class Map {
                 if (rainfall == Rainfall.Dry) terrain = Terrain.Desert;
                 else if (rainfall == Rainfall.Moderate) terrain = Terrain.Plains;
                 else if (rainfall == Rainfall.Wet) terrain = Terrain.Grassland;
+            }
+
+            if (elevation == Elevation.Hill) {
+                terrain += 6;
+            } else if (elevation == Elevation.Mountain) {
+                terrain += 11;
             }
 
             SetTerrain(terrain);
