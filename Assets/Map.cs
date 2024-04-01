@@ -53,7 +53,7 @@ public class Map {
         };
 
         NoiseMapArgs elevationNoiseMapArgs = new() {
-            scale = 25,
+            scale = 3,
             octaves = 4,
             persistence = 0.5f,
             lacunarity = 2
@@ -76,7 +76,9 @@ public class Map {
         float seaLevelThreshold = 0.6f;
 
         ValueThreshold<Map.Tile.Elevation>[] elevationThresholds = {
-            new() { value = Tile.Elevation.Flat, threshold = 1 },
+            new() { value = Tile.Elevation.Flat, threshold = 0.6f },
+            new() { value = Tile.Elevation.Hill, threshold = 0.8f },
+            new() { value = Tile.Elevation.Mountain, threshold = 1 }
         };
 
         ValueThreshold<Map.Tile.Temperature>[] temperatureThresholds = {
