@@ -309,7 +309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46eb62cc2c4d141f4bc3aeaf4a9083d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainSpritePositions:
+  biomeSpritePositions:
   - sprite: 0
     position: {x: 0, y: 0}
   - sprite: 1

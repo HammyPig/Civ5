@@ -133,7 +133,7 @@ public class Map {
         for (int x = 0; x < hexGrid.GetWidth(); x++) {
             for (int y = 0; y < hexGrid.GetHeight(); y++) {
                 Tile tile = hexGrid.GetObject(x, y);
-                tile.SetTerrain(Tile.Terrain.None);
+                tile.SetBiome(Tile.Biome.None);
                 tile.SetVegetation(Tile.Vegetation.None);
             }
         }
@@ -143,10 +143,10 @@ public class Map {
                 Tile tile = hexGrid.GetObject(x, y);
                 
                 if (seaLevelNoiseMap[x, y] <= seaLevelThreshold) {
-                    tile.SetTerrain(Tile.Terrain.Water);
+                    tile.SetBiome(Tile.Biome.Water);
                 }
 
-                if (tile.GetTerrain() == Tile.Terrain.Water) continue;
+                if (tile.GetBiome() == Tile.Biome.Water) continue;
                 
                 Map.Tile.Elevation elevation = Tile.Elevation.None;
                 Map.Tile.Temperature temperature = Tile.Temperature.None;
@@ -173,7 +173,7 @@ public class Map {
                     }
                 }
 
-                tile.SetTerrain(elevation, temperature, rainfall, seed);
+                tile.SetBiome(elevation, temperature, rainfall, seed);
                 tile.SetVegetation(temperature, rainfall, seed);
             }
         }
@@ -263,7 +263,7 @@ public class Map {
         // dry         tundra          plains      desert
         // normal      tundra-forest   grassland   plains
         // wet         snow            p/g-forest  grassland-jungle
-        public enum Terrain {
+        public enum Biome {
             None,
             Desert,
             Grassland,
@@ -289,52 +289,52 @@ public class Map {
             Jungle
         }
 
-        private Terrain terrain = Terrain.None;
+        private Biome biome = Biome.None;
         private Vegetation vegetation = Vegetation.None;
 
         public override string ToString() {
-            return terrain.ToString() + " " + vegetation.ToString();
+            return biome.ToString() + " " + vegetation.ToString();
         }
 
-        public Terrain GetTerrain() {
-            return terrain;
+        public Biome GetBiome() {
+            return biome;
         }
 
         public Vegetation GetVegetation() {
             return vegetation;
         }
 
-        public void SetTerrain(Terrain terrain) {
-            this.terrain = terrain;
+        public void SetBiome(Biome biome) {
+            this.biome = biome;
         }
 
-        public void SetTerrain(Elevation elevation, Temperature temperature, Rainfall rainfall, int seed) {
+        public void SetBiome(Elevation elevation, Temperature temperature, Rainfall rainfall, int seed) {
             System.Random prng = new(seed);
-            Terrain terrain = Terrain.None;
+            Biome biome = Biome.None;
             
             if (temperature == Temperature.Cold) {
-                if (rainfall == Rainfall.Dry || rainfall == Rainfall.Moderate) terrain = Terrain.Tundra;
-                else if (rainfall == Rainfall.Wet) terrain = Terrain.Snow;
+                if (rainfall == Rainfall.Dry || rainfall == Rainfall.Moderate) biome = Biome.Tundra;
+                else if (rainfall == Rainfall.Wet) biome = Biome.Snow;
             } else if (temperature == Temperature.Warm) {
-                if (rainfall == Rainfall.Dry) terrain = Terrain.Plains;
-                else if (rainfall == Rainfall.Moderate) terrain = Terrain.Grassland;
+                if (rainfall == Rainfall.Dry) biome = Biome.Plains;
+                else if (rainfall == Rainfall.Moderate) biome = Biome.Grassland;
                 else if (rainfall == Rainfall.Wet) {
-                    if (prng.Next(1) < 0.5) terrain = Terrain.Plains;
-                    else terrain = Terrain.Grassland;
+                    if (prng.Next(1) < 0.5) biome = Biome.Plains;
+                    else biome = Biome.Grassland;
                 }
             } else if (temperature == Temperature.Hot) {
-                if (rainfall == Rainfall.Dry) terrain = Terrain.Desert;
-                else if (rainfall == Rainfall.Moderate) terrain = Terrain.Plains;
-                else if (rainfall == Rainfall.Wet) terrain = Terrain.Grassland;
+                if (rainfall == Rainfall.Dry) biome = Biome.Desert;
+                else if (rainfall == Rainfall.Moderate) biome = Biome.Plains;
+                else if (rainfall == Rainfall.Wet) biome = Biome.Grassland;
             }
 
             if (elevation == Elevation.Hill) {
-                terrain += 6;
+                biome += 6;
             } else if (elevation == Elevation.Mountain) {
-                terrain += 11;
+                biome += 11;
             }
 
-            SetTerrain(terrain);
+            SetBiome(biome);
         }
 
         public void SetVegetation(Vegetation vegetation) {
