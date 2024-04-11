@@ -13,6 +13,10 @@ public class Game : MonoBehaviour {
         map = new Map(Map.MapSize.Standard);
         mapVisual.SetMap(map);
         mapDebugger.SetMap(map);
+
+        Unit unit = new();
+        unit.SetName("Worker");
+        map.GetTile(0, 0).SetUnit(unit);
     }
 
     void Update() {

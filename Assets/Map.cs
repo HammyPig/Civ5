@@ -238,17 +238,22 @@ public class Map {
     public class Tile {
 
         private Terrain terrain;
+        private Unit unit;
 
         public Tile() {
             terrain = new();
         }
 
         public override string ToString() {
-            return terrain.ToString();
+            return terrain.ToString() + " " + unit?.ToString();
         }
 
         public Terrain GetTerrain() {
             return terrain;
+        }
+
+        public void SetUnit(Unit unit) {
+            this.unit = unit;
         }
 
         public class Terrain {
