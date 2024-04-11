@@ -12,9 +12,9 @@ public class MapDebugger : MonoBehaviour {
     public Map.NoiseMapArgs rainfallNoiseMapArgs;
 
     public float seaLevelThreshold;
-    public Map.ValueThreshold<Map.Tile.Elevation>[] elevationThresholds;
-    public Map.ValueThreshold<Map.Tile.Temperature>[] temperatureThresholds;
-    public Map.ValueThreshold<Map.Tile.Rainfall>[] rainfallThresholds;
+    public Map.ValueThreshold<Map.Tile.Terrain.Elevation>[] elevationThresholds;
+    public Map.ValueThreshold<Map.Tile.Terrain.Temperature>[] temperatureThresholds;
+    public Map.ValueThreshold<Map.Tile.Terrain.Rainfall>[] rainfallThresholds;
 
     private Map map;
 

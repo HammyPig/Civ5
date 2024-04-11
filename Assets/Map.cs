@@ -75,22 +75,22 @@ public class Map {
 
         float seaLevelThreshold = 0.6f;
 
-        ValueThreshold<Map.Tile.Elevation>[] elevationThresholds = {
-            new() { value = Tile.Elevation.Flat, threshold = 0.6f },
-            new() { value = Tile.Elevation.Hill, threshold = 0.8f },
-            new() { value = Tile.Elevation.Mountain, threshold = 1 }
+        ValueThreshold<Map.Tile.Terrain.Elevation>[] elevationThresholds = {
+            new() { value = Tile.Terrain.Elevation.Flat, threshold = 0.6f },
+            new() { value = Tile.Terrain.Elevation.Hill, threshold = 0.8f },
+            new() { value = Tile.Terrain.Elevation.Mountain, threshold = 1 }
         };
 
-        ValueThreshold<Map.Tile.Temperature>[] temperatureThresholds = {
-            new() { value = Tile.Temperature.Cold, threshold = 0.2f },
-            new() { value = Tile.Temperature.Warm, threshold = 0.6f },
-            new() { value = Tile.Temperature.Hot, threshold = 1 }
+        ValueThreshold<Map.Tile.Terrain.Temperature>[] temperatureThresholds = {
+            new() { value = Tile.Terrain.Temperature.Cold, threshold = 0.2f },
+            new() { value = Tile.Terrain.Temperature.Warm, threshold = 0.6f },
+            new() { value = Tile.Terrain.Temperature.Hot, threshold = 1 }
         };
 
-        ValueThreshold<Map.Tile.Rainfall>[] rainfallThresholds = {
-            new() { value = Tile.Rainfall.Dry, threshold = 0.4f },
-            new() { value = Tile.Rainfall.Moderate, threshold = 0.7f },
-            new() { value = Tile.Rainfall.Wet, threshold = 1 }
+        ValueThreshold<Map.Tile.Terrain.Rainfall>[] rainfallThresholds = {
+            new() { value = Tile.Terrain.Rainfall.Dry, threshold = 0.4f },
+            new() { value = Tile.Terrain.Rainfall.Moderate, threshold = 0.7f },
+            new() { value = Tile.Terrain.Rainfall.Wet, threshold = 1 }
         };
 
         GenerateMap(
@@ -121,9 +121,9 @@ public class Map {
     public void GenerateMap(
         int seed, NoiseMapArgs seaLevelNoiseMapArgs, NoiseMapArgs elevationNoiseMapArgs,
         NoiseMapArgs temperatureNoiseMapArgs, NoiseMapArgs rainfallNoiseMapArgs,
-        float seaLevelThreshold, ValueThreshold<Map.Tile.Elevation>[] elevationThresholds,
-        ValueThreshold<Map.Tile.Temperature>[] temperatureThresholds,
-        ValueThreshold<Map.Tile.Rainfall>[] rainfallThresholds
+        float seaLevelThreshold, ValueThreshold<Map.Tile.Terrain.Elevation>[] elevationThresholds,
+        ValueThreshold<Map.Tile.Terrain.Temperature>[] temperatureThresholds,
+        ValueThreshold<Map.Tile.Terrain.Rainfall>[] rainfallThresholds
     ) {
         float[,] seaLevelNoiseMap = GenerateNoiseMap(seed, seaLevelNoiseMapArgs);
         float[,] elevationNoiseMap = GenerateNoiseMap(seed * 2, elevationNoiseMapArgs);
@@ -133,8 +133,8 @@ public class Map {
         for (int x = 0; x < hexGrid.GetWidth(); x++) {
             for (int y = 0; y < hexGrid.GetHeight(); y++) {
                 Tile tile = hexGrid.GetObject(x, y);
-                tile.SetBiome(Tile.Biome.None);
-                tile.SetVegetation(Tile.Vegetation.None);
+                tile.GetTerrain().SetBiome(Tile.Terrain.Biome.None);
+                tile.GetTerrain().SetVegetation(Tile.Terrain.Vegetation.None);
             }
         }
 
@@ -143,14 +143,14 @@ public class Map {
                 Tile tile = hexGrid.GetObject(x, y);
                 
                 if (seaLevelNoiseMap[x, y] <= seaLevelThreshold) {
-                    tile.SetBiome(Tile.Biome.Water);
+                    tile.GetTerrain().SetBiome(Tile.Terrain.Biome.Water);
                 }
 
-                if (tile.GetBiome() == Tile.Biome.Water) continue;
+                if (tile.GetTerrain().GetBiome() == Tile.Terrain.Biome.Water) continue;
                 
-                Map.Tile.Elevation elevation = Tile.Elevation.None;
-                Map.Tile.Temperature temperature = Tile.Temperature.None;
-                Map.Tile.Rainfall rainfall = Tile.Rainfall.None;
+                Map.Tile.Terrain.Elevation elevation = Tile.Terrain.Elevation.None;
+                Map.Tile.Terrain.Temperature temperature = Tile.Terrain.Temperature.None;
+                Map.Tile.Terrain.Rainfall rainfall = Tile.Terrain.Rainfall.None;
 
                 for (int i = 0; i < elevationThresholds.Length; i++) {
                     if (elevationNoiseMap[x, y] <= elevationThresholds[i].threshold) {
@@ -173,8 +173,8 @@ public class Map {
                     }
                 }
 
-                tile.SetBiome(elevation, temperature, rainfall, seed);
-                tile.SetVegetation(temperature, rainfall, seed);
+                tile.GetTerrain().SetBiome(elevation, temperature, rainfall, seed);
+                tile.GetTerrain().SetVegetation(temperature, rainfall, seed);
             }
         }
 
@@ -233,127 +233,149 @@ public class Map {
 
     public class Tile {
 
-        public enum SeaLevel {
-            Below,
-            Above
-        }
+        private Terrain terrain;
 
-        public enum Elevation {
-            None,
-            Flat,
-            Hill,
-            Mountain
+        public Tile() {
+            terrain = new();
         }
-
-        public enum Temperature {
-            None,
-            Cold,
-            Warm,
-            Hot
-        }
-
-        public enum Rainfall {
-            None,
-            Dry,
-            Moderate,
-            Wet
-        }
-
-        //             cold            warm        hot
-        // dry         tundra          plains      desert
-        // normal      tundra-forest   grassland   plains
-        // wet         snow            p/g-forest  grassland-jungle
-        public enum Biome {
-            None,
-            Desert,
-            Grassland,
-            Plains,
-            Snow,
-            Tundra,
-            Water,
-            DesertHill,
-            GrasslandHill,
-            PlainsHill,
-            SnowHill,
-            TundraHill,
-            DesertMountain,
-            GrasslandMountain,
-            PlainsMountain,
-            SnowMountain,
-            TundraMountain
-        }
-
-        public enum Vegetation {
-            None,
-            Forest,
-            Jungle
-        }
-
-        private Biome biome = Biome.None;
-        private Vegetation vegetation = Vegetation.None;
 
         public override string ToString() {
-            return biome.ToString() + " " + vegetation.ToString();
+            return terrain.ToString();
         }
 
-        public Biome GetBiome() {
-            return biome;
+        public Terrain GetTerrain() {
+            return terrain;
         }
 
-        public Vegetation GetVegetation() {
-            return vegetation;
-        }
+        public class Terrain {
 
-        public void SetBiome(Biome biome) {
-            this.biome = biome;
-        }
+            public enum SeaLevel {
+                Below,
+                Above
+            }
 
-        public void SetBiome(Elevation elevation, Temperature temperature, Rainfall rainfall, int seed) {
-            System.Random prng = new(seed);
-            Biome biome = Biome.None;
-            
-            if (temperature == Temperature.Cold) {
-                if (rainfall == Rainfall.Dry || rainfall == Rainfall.Moderate) biome = Biome.Tundra;
-                else if (rainfall == Rainfall.Wet) biome = Biome.Snow;
-            } else if (temperature == Temperature.Warm) {
-                if (rainfall == Rainfall.Dry) biome = Biome.Plains;
-                else if (rainfall == Rainfall.Moderate) biome = Biome.Grassland;
-                else if (rainfall == Rainfall.Wet) {
-                    if (prng.Next(1) < 0.5) biome = Biome.Plains;
-                    else biome = Biome.Grassland;
+            public enum Elevation {
+                None,
+                Flat,
+                Hill,
+                Mountain
+            }
+
+            public enum Temperature {
+                None,
+                Cold,
+                Warm,
+                Hot
+            }
+
+            public enum Rainfall {
+                None,
+                Dry,
+                Moderate,
+                Wet
+            }
+
+            //             cold            warm        hot
+            // dry         tundra          plains      desert
+            // normal      tundra-forest   grassland   plains
+            // wet         snow            p/g-forest  grassland-jungle
+            public enum Biome {
+                None,
+                Desert,
+                Grassland,
+                Plains,
+                Snow,
+                Tundra,
+                Water,
+                DesertHill,
+                GrasslandHill,
+                PlainsHill,
+                SnowHill,
+                TundraHill,
+                DesertMountain,
+                GrasslandMountain,
+                PlainsMountain,
+                SnowMountain,
+                TundraMountain
+            }
+
+            public enum Vegetation {
+                None,
+                Forest,
+                Jungle
+            }
+
+            private Biome biome;
+            private Vegetation vegetation;
+
+            public Terrain() {
+                biome = Biome.None;
+                vegetation = Vegetation.None;
+            }
+
+            public override string ToString() {
+                return biome.ToString() + " " + vegetation.ToString();
+            }
+
+            public Biome GetBiome() {
+                return biome;
+            }
+
+            public Vegetation GetVegetation() {
+                return vegetation;
+            }
+
+            public void SetBiome(Biome biome) {
+                this.biome = biome;
+            }
+
+            public void SetBiome(Elevation elevation, Temperature temperature, Rainfall rainfall, int seed) {
+                System.Random prng = new(seed);
+                Biome biome = Biome.None;
+                
+                if (temperature == Temperature.Cold) {
+                    if (rainfall == Rainfall.Dry || rainfall == Rainfall.Moderate) biome = Biome.Tundra;
+                    else if (rainfall == Rainfall.Wet) biome = Biome.Snow;
+                } else if (temperature == Temperature.Warm) {
+                    if (rainfall == Rainfall.Dry) biome = Biome.Plains;
+                    else if (rainfall == Rainfall.Moderate) biome = Biome.Grassland;
+                    else if (rainfall == Rainfall.Wet) {
+                        if (prng.Next(1) < 0.5) biome = Biome.Plains;
+                        else biome = Biome.Grassland;
+                    }
+                } else if (temperature == Temperature.Hot) {
+                    if (rainfall == Rainfall.Dry) biome = Biome.Desert;
+                    else if (rainfall == Rainfall.Moderate) biome = Biome.Plains;
+                    else if (rainfall == Rainfall.Wet) biome = Biome.Grassland;
                 }
-            } else if (temperature == Temperature.Hot) {
-                if (rainfall == Rainfall.Dry) biome = Biome.Desert;
-                else if (rainfall == Rainfall.Moderate) biome = Biome.Plains;
-                else if (rainfall == Rainfall.Wet) biome = Biome.Grassland;
+
+                if (elevation == Elevation.Hill) {
+                    biome += 6;
+                } else if (elevation == Elevation.Mountain) {
+                    biome += 11;
+                }
+
+                SetBiome(biome);
             }
 
-            if (elevation == Elevation.Hill) {
-                biome += 6;
-            } else if (elevation == Elevation.Mountain) {
-                biome += 11;
+            public void SetVegetation(Vegetation vegetation) {
+                this.vegetation = vegetation;
             }
 
-            SetBiome(biome);
-        }
+            public void SetVegetation(Temperature temperature, Rainfall rainfall, int seed) {
+                System.Random prng = new(seed);
+                Vegetation vegetation = Vegetation.None;
 
-        public void SetVegetation(Vegetation vegetation) {
-            this.vegetation = vegetation;
-        }
+                if (temperature == Temperature.Cold) {
+                    if (rainfall == Rainfall.Moderate) vegetation = Vegetation.Forest;
+                } else if (temperature == Temperature.Warm) {
+                    if (rainfall == Rainfall.Wet) vegetation = Vegetation.Forest;
+                } else if (temperature == Temperature.Hot) {
+                    if (rainfall == Rainfall.Wet) vegetation = Vegetation.Jungle;
+                }
 
-        public void SetVegetation(Temperature temperature, Rainfall rainfall, int seed) {
-            System.Random prng = new(seed);
-            Vegetation vegetation = Vegetation.None;
-
-            if (temperature == Temperature.Cold) {
-                if (rainfall == Rainfall.Moderate) vegetation = Vegetation.Forest;
-            } else if (temperature == Temperature.Warm) {
-                if (rainfall == Rainfall.Wet) vegetation = Vegetation.Forest;
-            } else if (temperature == Temperature.Hot) {
-                if (rainfall == Rainfall.Wet) vegetation = Vegetation.Jungle;
+                SetVegetation(vegetation);
             }
-
-            SetVegetation(vegetation);
         }
-    }
+    }   
 }

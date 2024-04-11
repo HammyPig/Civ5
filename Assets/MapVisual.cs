@@ -10,11 +10,11 @@ public class MapVisual : MonoBehaviour {
         public Vector2Int position;
     }
     
-    [SerializeField] private SpritePosition<Map.Tile.Biome>[] biomeSpritePositions;
-    [SerializeField] private SpritePosition<Map.Tile.Vegetation>[] vegetationSpritePositions;
+    [SerializeField] private SpritePosition<Map.Tile.Terrain.Biome>[] biomeSpritePositions;
+    [SerializeField] private SpritePosition<Map.Tile.Terrain.Vegetation>[] vegetationSpritePositions;
 
-    private Dictionary<Map.Tile.Biome, Vector2> biomeSpriteCentrePosition;
-    private Dictionary<Map.Tile.Vegetation, Vector2> vegetationSpriteCentrePosition;
+    private Dictionary<Map.Tile.Terrain.Biome, Vector2> biomeSpriteCentrePosition;
+    private Dictionary<Map.Tile.Terrain.Vegetation, Vector2> vegetationSpriteCentrePosition;
     private Mesh mesh;
     private Map map;
     private bool updateMesh = false;
@@ -30,7 +30,7 @@ public class MapVisual : MonoBehaviour {
         float textureCellHeight = 16;
 
         biomeSpriteCentrePosition = new();
-        foreach (SpritePosition<Map.Tile.Biome> biomeSpritePosition in biomeSpritePositions) {
+        foreach (SpritePosition<Map.Tile.Terrain.Biome> biomeSpritePosition in biomeSpritePositions) {
             biomeSpriteCentrePosition[biomeSpritePosition.sprite] = new Vector2(
                 (biomeSpritePosition.position.x * textureCellWidth + 1) / textureWidth,
                 (textureHeight / textureCellHeight - 1 - biomeSpritePosition.position.y) * textureCellHeight / textureHeight
@@ -38,7 +38,7 @@ public class MapVisual : MonoBehaviour {
         }
 
         vegetationSpriteCentrePosition = new();
-        foreach (SpritePosition<Map.Tile.Vegetation> vegetationSpritePosition in vegetationSpritePositions) {
+        foreach (SpritePosition<Map.Tile.Terrain.Vegetation> vegetationSpritePosition in vegetationSpritePositions) {
             vegetationSpriteCentrePosition[vegetationSpritePosition.sprite] = new Vector2(
                 (vegetationSpritePosition.position.x * textureCellWidth + 1) / textureWidth,
                 (textureHeight / textureCellHeight - 1 - vegetationSpritePosition.position.y) * textureCellHeight / textureHeight
@@ -97,20 +97,20 @@ public class MapVisual : MonoBehaviour {
                 float circumradius = textureCellHeight / 2;
                 float inradius = Mathf.Sqrt(3) / 2 * circumradius;
                 
-                if (tile.GetVegetation() != Map.Tile.Vegetation.None) {
-                    uv[vertexIndexOffset] = vegetationSpriteCentrePosition[tile.GetVegetation()] + (new Vector2(0, circumradius / 2f) / textureWidth);
-                    uv[vertexIndexOffset + 1] = vegetationSpriteCentrePosition[tile.GetVegetation()] + (new Vector2(0, circumradius * 1.5f) / textureWidth);
-                    uv[vertexIndexOffset + 2] = vegetationSpriteCentrePosition[tile.GetVegetation()] + (new Vector2(inradius, circumradius * 2f) / textureWidth);
-                    uv[vertexIndexOffset + 3] = vegetationSpriteCentrePosition[tile.GetVegetation()] + (new Vector2(inradius * 2f, circumradius * 1.5f) / textureWidth);
-                    uv[vertexIndexOffset + 4] = vegetationSpriteCentrePosition[tile.GetVegetation()] + (new Vector2(inradius * 2f, circumradius / 2f) / textureWidth);
-                    uv[vertexIndexOffset + 5] = vegetationSpriteCentrePosition[tile.GetVegetation()] + (new Vector2(inradius, 0) / textureWidth);
+                if (tile.GetTerrain().GetVegetation() != Map.Tile.Terrain.Vegetation.None) {
+                    uv[vertexIndexOffset] = vegetationSpriteCentrePosition[tile.GetTerrain().GetVegetation()] + (new Vector2(0, circumradius / 2f) / textureWidth);
+                    uv[vertexIndexOffset + 1] = vegetationSpriteCentrePosition[tile.GetTerrain().GetVegetation()] + (new Vector2(0, circumradius * 1.5f) / textureWidth);
+                    uv[vertexIndexOffset + 2] = vegetationSpriteCentrePosition[tile.GetTerrain().GetVegetation()] + (new Vector2(inradius, circumradius * 2f) / textureWidth);
+                    uv[vertexIndexOffset + 3] = vegetationSpriteCentrePosition[tile.GetTerrain().GetVegetation()] + (new Vector2(inradius * 2f, circumradius * 1.5f) / textureWidth);
+                    uv[vertexIndexOffset + 4] = vegetationSpriteCentrePosition[tile.GetTerrain().GetVegetation()] + (new Vector2(inradius * 2f, circumradius / 2f) / textureWidth);
+                    uv[vertexIndexOffset + 5] = vegetationSpriteCentrePosition[tile.GetTerrain().GetVegetation()] + (new Vector2(inradius, 0) / textureWidth);
                 } else {
-                    uv[vertexIndexOffset] = biomeSpriteCentrePosition[tile.GetBiome()] + (new Vector2(0, circumradius / 2f) / textureWidth);
-                    uv[vertexIndexOffset + 1] = biomeSpriteCentrePosition[tile.GetBiome()] + (new Vector2(0, circumradius * 1.5f) / textureWidth);
-                    uv[vertexIndexOffset + 2] = biomeSpriteCentrePosition[tile.GetBiome()] + (new Vector2(inradius, circumradius * 2f) / textureWidth);
-                    uv[vertexIndexOffset + 3] = biomeSpriteCentrePosition[tile.GetBiome()] + (new Vector2(inradius * 2f, circumradius * 1.5f) / textureWidth);
-                    uv[vertexIndexOffset + 4] = biomeSpriteCentrePosition[tile.GetBiome()] + (new Vector2(inradius * 2f, circumradius / 2f) / textureWidth);
-                    uv[vertexIndexOffset + 5] = biomeSpriteCentrePosition[tile.GetBiome()] + (new Vector2(inradius, 0) / textureWidth);
+                    uv[vertexIndexOffset] = biomeSpriteCentrePosition[tile.GetTerrain().GetBiome()] + (new Vector2(0, circumradius / 2f) / textureWidth);
+                    uv[vertexIndexOffset + 1] = biomeSpriteCentrePosition[tile.GetTerrain().GetBiome()] + (new Vector2(0, circumradius * 1.5f) / textureWidth);
+                    uv[vertexIndexOffset + 2] = biomeSpriteCentrePosition[tile.GetTerrain().GetBiome()] + (new Vector2(inradius, circumradius * 2f) / textureWidth);
+                    uv[vertexIndexOffset + 3] = biomeSpriteCentrePosition[tile.GetTerrain().GetBiome()] + (new Vector2(inradius * 2f, circumradius * 1.5f) / textureWidth);
+                    uv[vertexIndexOffset + 4] = biomeSpriteCentrePosition[tile.GetTerrain().GetBiome()] + (new Vector2(inradius * 2f, circumradius / 2f) / textureWidth);
+                    uv[vertexIndexOffset + 5] = biomeSpriteCentrePosition[tile.GetTerrain().GetBiome()] + (new Vector2(inradius, 0) / textureWidth);
                 }
             }
         }
