@@ -114,6 +114,10 @@ public class Map {
         return hexGrid;
     }
 
+    public Tile GetTile(int x, int y) {
+        return hexGrid.GetObject(x, y);
+    }
+
     public Tile GetTile(Vector3 position) {
         return hexGrid.GetObject(position);
     }
