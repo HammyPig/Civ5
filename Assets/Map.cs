@@ -235,6 +235,14 @@ public class Map {
         return noiseMap;
     }
 
+    public void UpdateTileVisual(int x, int y) {
+        hexGrid.OnCellUpdate(new Grid<Map.Tile>.CellUpdateEventArgs { x = x, y = y });
+    }
+
+    public void UpdateTileVisual(Map.Tile tile) {
+        hexGrid.OnCellUpdate(new Grid<Map.Tile>.CellUpdateEventArgs { x = tile.GetX(), y = tile.GetY() });
+    }
+
     public class Tile {
 
         private int x;
@@ -249,11 +257,23 @@ public class Map {
         }
 
         public override string ToString() {
-            return "(" + x + ", " + y + ")" + terrain.ToString() + " " + unit?.ToString();
+            return unit?.ToString();
+        }
+
+        public int GetX() {
+            return x;
+        }
+
+        public int GetY() {
+            return y;
         }
 
         public Terrain GetTerrain() {
             return terrain;
+        }
+
+        public Unit GetUnit() {
+            return unit;
         }
 
         public void SetUnit(Unit unit) {
