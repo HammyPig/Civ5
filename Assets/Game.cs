@@ -11,6 +11,7 @@ public class Game : MonoBehaviour {
     private GridDebugVisual<Map.Tile> gridDebugVisual;
 
     private Unit selectedUnit;
+    private List<Unit> units;
 
     void Start() {
         map = new Map(Map.MapSize.Standard);
@@ -18,17 +19,26 @@ public class Game : MonoBehaviour {
         mapDebugger.SetMap(map);
         gridDebugVisual = new(map.GetGrid());
 
-        Unit unit = new();
-        unit.SetName("Settler");
-        map.GetTile(0, 0).SetUnit(unit);
-        unit.SetTile(map.GetTile(0, 0));
+        units = new();
+
+        Unit unit1 = new();
+        unit1.SetName("Settler");
+        unit1.SetMaxMoves(2);
+        unit1.RefreshMoves();
+        map.GetTile(0, 0).SetUnit(unit1);
+        unit1.SetTile(map.GetTile(0, 0));
         map.UpdateTileVisual(0, 0);
 
         Unit unit2 = new();
         unit2.SetName("Warrior");
+        unit2.SetMaxMoves(2);
+        unit2.RefreshMoves();
         map.GetTile(1, 0).SetUnit(unit2);
         unit2.SetTile(map.GetTile(1, 0));
         map.UpdateTileVisual(1, 0);
+
+        units.Add(unit1);
+        units.Add(unit2);
     }
 
     void Update() {
@@ -49,6 +59,7 @@ public class Game : MonoBehaviour {
 
         if (Input.GetMouseButtonDown(1)) {
             if (selectedUnit == null) return;
+            if (selectedUnit.GetMoves() <= 0) return;
             
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Map.Tile targetTile = map.GetTile(mousePosition);
@@ -60,9 +71,16 @@ public class Game : MonoBehaviour {
             selectedUnit.SetTile(targetTile);
             originTile.SetUnit(null);
             targetTile.SetUnit(selectedUnit);
+            selectedUnit.SetMoves(0);
 
             map.UpdateTileVisual(originTile);
             map.UpdateTileVisual(targetTile);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            foreach (Unit unit in units) {
+                unit.RefreshMoves();
+            }
         }
     }
 }
