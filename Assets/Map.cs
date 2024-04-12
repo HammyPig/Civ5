@@ -43,7 +43,7 @@ public class Map {
         this.mapSize = mapSize;
         int mapSizeWidth = mapSizeWidthHeight[mapSize].x;
         int mapSizeHeight = mapSizeWidthHeight[mapSize].y;
-        hexGrid = new(mapSizeWidth, mapSizeHeight, Vector3.zero, (Grid<Tile> g, int x, int y) => new Tile(), 5f);
+        hexGrid = new(mapSizeWidth, mapSizeHeight, Vector3.zero, (Grid<Tile> g, int x, int y) => new Tile(x, y), 5f);
         
         NoiseMapArgs seaLevelNoiseMapArgs = new() {
             scale = 25,
@@ -237,15 +237,19 @@ public class Map {
 
     public class Tile {
 
+        private int x;
+        private int y;
         private Terrain terrain;
         private Unit unit;
 
-        public Tile() {
+        public Tile(int x, int y) {
+            this.x = x;
+            this.y = y;
             terrain = new();
         }
 
         public override string ToString() {
-            return terrain.ToString() + " " + unit?.ToString();
+            return "(" + x + ", " + y + ")" + terrain.ToString() + " " + unit?.ToString();
         }
 
         public Terrain GetTerrain() {
